@@ -4,13 +4,26 @@ import socket
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+shift = 14
 
 def criptografar(mensagem):
-    return ''.join(chr(ord(char) + 1) for char in mensagem)
+    list_ascii= []
+    for char in mensagem:
+        ascii_value = ord(char)
+        ascii_value = (ascii_value + shift) % 256
+        if ascii_value < 32:
+            ascii_value= 32+ascii_value
+        list_ascii.append(ascii_value)
+    return list_ascii
 
 def descriptografar(mensagem):
-    return ''.join(chr(ord(char) - 1) for char in mensagem)
-
+    list_ascii= []
+    for char in mensagem:
+        ascii_value = ord(char)
+        ascii_value = ascii_value - shift
+        list_ascii.append(ascii_value)
+    return list_ascii
+        
 def to_binary(mensagem):
     return ''.join(format(ord(char), '08b') for char in mensagem)
 
