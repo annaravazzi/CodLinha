@@ -3,78 +3,41 @@ from tkinter import messagebox, scrolledtext
 import socket
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import encode_decode
 
-shift = 14
+KEY = 14
 
-def criptografar(mensagem):
-    list_ascii= []
-    for char in mensagem:
-        ascii_value = ord(char)
-        ascii_value = (ascii_value + shift) % 256
-        if ascii_value < 32:
-            ascii_value= 32+ascii_value
-        list_ascii.append(ascii_value)
-    return list_ascii
-
-def descriptografar(mensagem):
-    list_ascii= []
-    for char in mensagem:
-        ascii_value = ord(char)
-        ascii_value = ascii_value - shift
-        list_ascii.append(ascii_value)
-    return list_ascii
-        
-def to_binary(mensagem):
-    return ''.join(format(ord(char), '08b') for char in mensagem)
-
-#ami  pseudoternario ou bipolar(0 é codificado sem pulso e 1 é alternado entre positivo e negativo)
-def ami_pseudoternary(binary_message):
-    result = []
-    positive = True
-    for bit in binary_message:
-        if bit == '0':
-            result.append('0')
-        else:
-
-            if positive:
-                result.append('+')
-            else:
-                result.append('-')
-            positive = not positive
-    return result
-
+# Plota a forma de onda da mensagem codificada
 def plot_waveform(encoded_message):
     time = list(range(len(encoded_message)))
     signal = []
-    level = 0
     for bit in encoded_message:
         if bit == '0':
-            signal.append(level)
+            signal.append(0)
         elif bit == '+':
-            level = 1
-            signal.append(level)
+            signal.append(1)
         elif bit == '-':
-            level = -1
-            signal.append(level)
+            signal.append(-1)
     fig, ax = plt.subplots()
     ax.step(time, signal, where='mid')
-    ax.set(title='Ami Pseudoternary Waveform', xlabel='Time', ylabel='Signal Level')
+    ax.set(title='AMI Pseudoternário', xlabel='Tempo', ylabel='Sinal')
     ax.grid()
     return fig
 
-class App:
+# Interface gráfica
+class Application:
     def __init__(self, root):
-        self.root = root
-        self.root.title("Codificação Ami Pseudoternário")
 
-        # Frames
+        # Disposição da janela
+        self.root = root
+        self.root.title("Codificação AMI Pseudoternário")
+
         frame_top = tk.Frame(root)
         frame_top.pack(pady=10)
 
         frame_bottom = tk.Frame(root)
         frame_bottom.pack(pady=10)
 
-        # Labels and Text Inputs
         tk.Label(frame_top, text="Mensagem:").grid(row=0, column=0, padx=5, pady=5)
         self.msg_entry = tk.Entry(frame_top, width=50)
         self.msg_entry.grid(row=0, column=1, padx=5, pady=5)
@@ -93,33 +56,41 @@ class App:
         self.msg_encoded = scrolledtext.ScrolledText(frame_bottom, width=60, height=5)
         self.msg_encoded.grid(row=5, column=0, padx=5, pady=5)
 
-        # Placeholder for waveform plot
         self.waveform_frame = tk.Frame(frame_bottom)
         self.waveform_frame.grid(row=6, column=0, pady=20)
 
     def send_message(self):
-        mensagem = self.msg_entry.get()
-        if not mensagem:
+        message = self.msg_entry.get()
+        if not message:
             messagebox.showerror("Erro", "Digite uma mensagem.")
             return
 
-        criptografada = criptografar(mensagem)
-        binaria = to_binary(criptografada)
-        codificada = ami_pseudoternary(binaria)
+        # Criptografia e codificação da mensagem
+        alphabet = encode_decode.generate_alphabet()
+        encrypted = encode_decode.encrypt(message, alphabet, KEY)
+        binary = encode_decode.ascii_to_binary(encode_decode.string_to_ascii(encrypted))
+        encoded = encode_decode.encode_ami_pseudoternary(binary)
+        print(alphabet)
 
-        # Display results
-        self.msg_encrypted.insert(tk.END, criptografada + "\n")
-        self.msg_binary.insert(tk.END, binaria + "\n")
-        self.msg_encoded.insert(tk.END, ''.join(codificada) + "\n")
+        # Atualiza os campos de texto
+        self.msg_encrypted.insert(tk.END, encrypted + "\n")
+        self.msg_binary.insert(tk.END, binary + "\n")
+        self.msg_encoded.insert(tk.END, ''.join(encoded) + "\n")
 
-        # Plot waveform
-        fig = plot_waveform(codificada)
+        # Plota a forma de onda
+        fig = plot_waveform(encoded)
         canvas = FigureCanvasTkAgg(fig, master=self.waveform_frame)
         canvas.draw()
         canvas.get_tk_widget().pack()
 
         # Communication (example code, replace with actual network code)
         # self.communicate(''.join(codificada))
+
+    def receive_message(self):
+        encoded = ""
+        binary = encode_decode.decode_ami_pseudoternary(encoded)
+        decrypted = encode_decode.ascii_to_string(encode_decode.binary_to_ascii(binary))
+
 
     # Example communication function (replace with actual network communication)
     def communicate(self, message):
@@ -131,5 +102,5 @@ class App:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = App(root)
+    app = Application(root)
     root.mainloop()
