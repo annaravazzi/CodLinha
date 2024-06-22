@@ -45,7 +45,7 @@ class Application:
         # self.connect_checkbutton.grid(row=0, column=2, padx=5, pady=5)
 
         tk.Label(self.conn_frame, text="Host:").grid(row=1, column=0, padx=5, pady=5)
-        self.ip_entry.config(textvariable=self.host)
+        self.ip_entry.config(textvariable=self.ip)
         self.ip_entry.grid(row=1, column=1, padx=5, pady=5)
 
         tk.Label(self.conn_frame, text="Porta:").grid(row=2, column=0, padx=5, pady=5)
@@ -63,6 +63,7 @@ class Application:
             self.ip_entry.config(state=tk.DISABLED)
             # self.confirm_button.config(state=tk.NORMAL)
             self.ip.set(get_ip())
+            self.ip_entry.config(textvariable=self.ip)
         else:
             # self.connect_checkbutton.config(state=tk.NORMAL)
             self.ip_entry.config(state=tk.NORMAL)
@@ -82,6 +83,7 @@ class Application:
     #         self.host.set('')
 
     def connect(self):
+        print(self.ip.get(), self.port.get())
         try:
             self.host.ip = self.ip.get()
             self.host.port = int(self.port.get())
