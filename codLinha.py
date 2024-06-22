@@ -70,6 +70,7 @@ class Application:
         encrypted = encode_decode.encrypt(message, alphabet, KEY)
         binary = encode_decode.ascii_to_binary(encode_decode.string_to_ascii(encrypted))
         encoded = encode_decode.encode_ami_pseudoternary(binary)
+        # encoded = encode_decode.encode_ami_pseudoternary("010010")
         print(alphabet)
 
         # Atualiza os campos de texto
