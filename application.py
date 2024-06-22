@@ -100,16 +100,17 @@ class Application:
 
     def send_message(self):
         message = self.msg_entry.get()
+        print(message)
         if not message:
             messagebox.showerror("Erro", "Digite uma mensagem.")
             return
 
         # Criptografia e codificação da mensagem
-        encrypted = EncodeDecode.encrypt(message)
-        binary = EncodeDecode.ascii_to_binary(EncodeDecode.string_to_ascii(encrypted))
-        encoded = EncodeDecode.encode_ami_pseudoternary(binary)
+        encrypted = self.encode_decode.encrypt(message)
+        binary = self.encode_decode.ascii_to_binary(self.encode_decode.string_to_ascii(encrypted))
+        encoded = self.encode_decode.encode_ami_pseudoternary(binary)
         # encoded = encode_decode.encode_ami_pseudoternary("010010")
-        print(EncodeDecode.alphabet)
+        print(self.encode_decode.alphabet)
 
         # Atualiza os campos de texto
         self.msg_encrypted.insert(tk.END, encrypted + "\n")
@@ -117,6 +118,7 @@ class Application:
         self.msg_encoded.insert(tk.END, ''.join(encoded) + "\n")
 
         # Plota a forma de onda
+        print(encoded)
         fig = self.plot_waveform(encoded)
         canvas = FigureCanvasTkAgg(fig, master=self.waveform_frame)
         canvas.draw()
@@ -128,9 +130,9 @@ class Application:
 
     def receive_message(self):
         encoded = self.host.receive_message()
-        binary = EncodeDecode.decode_ami_pseudoternary(encoded)
-        encrypted = EncodeDecode.ascii_to_string(EncodeDecode.binary_to_ascii(binary))
-        message = EncodeDecode.decrypt(encrypted)
+        binary = self.encode_decode.decode_ami_pseudoternary(encoded)
+        encrypted = self.encode_decode.ascii_to_string(self.encode_decode.binary_to_ascii(binary))
+        message = self.encode_decode.decrypt(encrypted)
 
         # Atualiza os campos de texto
         self.msg_encrypted.insert(tk.END, encrypted + "\n")
@@ -174,7 +176,7 @@ class Application:
         self.waveform_frame.grid(row=6, column=0, pady=20)
 
     # Plota a forma de onda da mensagem codificada
-    def plot_waveform(encoded_message):
+    def plot_waveform(self, encoded_message):
         time = list(range(len(encoded_message)))
         signal = []
         for bit in encoded_message:

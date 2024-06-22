@@ -39,12 +39,12 @@ class Host:
 
     def send_message(self):
         if self.is_server:
-            self.conn.send(self.encoded_msg.encode('uft-8'))
+            self.conn.send(self.encoded_msg.encode())
         else:
-            self.conn_socket.send(self.encoded_msg.encode('uft-8'))
+            self.conn_socket.send(self.encoded_msg.encode())
     
     def receive_message(self):
         if self.is_server:
-            return self.conn.recv(1024).decode('uft-8')
+            return self.conn.recv(1024).decode()
         else:
-            return self.conn_socket.recv(1024).decode('uft-8')
+            return self.conn_socket.recv(1024).decode()
