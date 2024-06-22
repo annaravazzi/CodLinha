@@ -156,7 +156,7 @@ class Application:
         self.msg_entry.grid(row=0, column=1, padx=5, pady=5)
 
         tk.Button(frame_top, text="Enviar", command=self.send_message).grid(row=1, column=0, columnspan=2, pady=10)
-        tk.Button(frame_top, text="Receber", command=self.receive_message).grid(row=1, column=0, columnspan=2, pady=10)
+        tk.Button(frame_top, text="Receber", command=self.receive_message).grid(row=2, column=0, columnspan=2, pady=10)
 
         tk.Label(frame_bottom, text="Mensagem Criptografada:").grid(row=0, column=0, padx=5, pady=5)
         self.msg_encrypted = scrolledtext.ScrolledText(frame_bottom, width=60, height=5)
