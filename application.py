@@ -32,6 +32,25 @@ class Application:
         self.init_conn_frame()
         self.canvas = None  # To store the graph canvas
 
+        # Create the canvas and scrollbar
+        self.scroll_canvas = tk.Canvas(root)
+        self.scrollbar = tk.Scrollbar(root, orient="vertical", command=self.scroll_canvas.yview)
+        self.scroll_canvas.configure(yscrollcommand=self.scrollbar.set)
+        
+        self.scrollbar.pack(side="right", fill="y")
+        self.scroll_canvas.pack(side="left", fill="both", expand=True)
+
+        # Create a frame inside the canvas
+        self.scrollable_frame = tk.Frame(self.scroll_canvas)
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.scroll_canvas.configure(
+                scrollregion=self.scroll_canvas.bbox("all")
+            )
+        )
+        
+        self.scroll_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+
     def init_conn_frame(self):
         tk.Label(self.conn_frame, text="Conexão em rede:").grid(row=0, column=0, padx=5, pady=5)
 
@@ -142,10 +161,10 @@ class Application:
         self.canvas.get_tk_widget().pack()
 
     def init_message_frame(self):
-        frame_top = tk.Frame(root)
+        frame_top = tk.Frame(self.scrollable_frame)
         frame_top.pack(pady=10)
 
-        frame_bottom = tk.Frame(root)
+        frame_bottom = tk.Frame(self.scrollable_frame)
         frame_bottom.pack(pady=10)
 
         tk.Label(frame_top, text="Mensagem:").grid(row=0, column=0, padx=5, pady=5)
