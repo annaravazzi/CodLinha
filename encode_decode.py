@@ -13,6 +13,7 @@ class EncodeDecode:
         self.key = key
 
     # Criptografa a mensagem com a cifra de César
+    # Source: https://medium.com/vacatronics/cifra-de-c%C3%A9sar-em-python-8d02d3bc7d42
     def encrypt(self, message):
         encrypted_message = ""
         for char in message:
@@ -24,6 +25,7 @@ class EncodeDecode:
         return encrypted_message
 
     # Descriptografa a mensagem com a cifra de César
+    # Source: https://medium.com/vacatronics/cifra-de-c%C3%A9sar-em-python-8d02d3bc7d42
     def decrypt(self, message):
         decrypted_message = ""
         for char in message:

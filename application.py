@@ -105,6 +105,7 @@ class Application:
         encrypted = self.encode_decode.encrypt(message)
         binary = self.encode_decode.ascii_to_binary(self.encode_decode.string_to_ascii(encrypted))
         encoded = self.encode_decode.encode_ami_pseudoternary(binary)
+        # encoded = self.encode_decode.encode_ami_pseudoternary("010010")
         print(self.encode_decode.alphabet)
 
         # Clear previous text and insert new text
