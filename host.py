@@ -1,5 +1,5 @@
 import socket
-
+# Source: https://stackoverflow.com/a/28950776/3057377
 def get_ip():
     tmp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     tmp.settimeout(0)
