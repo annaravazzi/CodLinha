@@ -133,6 +133,17 @@ class Application:
 
     def receive_message(self):
         encoded = self.host.receive_message()
+
+        fig = self.plot_waveform(encoded)
+
+        # Clear the previous canvas if it exists
+        if self.canvas:
+            self.canvas.get_tk_widget().destroy()
+
+        self.canvas = FigureCanvasTkAgg(fig, master=self.waveform_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack()
+
         binary = self.encode_decode.decode_ami_pseudoternary(encoded)
         encrypted = self.encode_decode.ascii_to_string(self.encode_decode.binary_to_ascii(binary))
         message = self.encode_decode.decrypt(encrypted)
@@ -149,16 +160,6 @@ class Application:
 
         self.msg_entry.delete(0, tk.END)
         self.msg_entry.insert(0, message)
-
-        fig = self.plot_waveform(encoded)
-
-        # Clear the previous canvas if it exists
-        if self.canvas:
-            self.canvas.get_tk_widget().destroy()
-
-        self.canvas = FigureCanvasTkAgg(fig, master=self.waveform_frame)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack()
 
     def init_message_frame(self):
         frame_top = tk.Frame(self.scrollable_frame)
